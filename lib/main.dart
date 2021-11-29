@@ -4,7 +4,7 @@ import 'calculator_page.dart';
 
 
 void main() {
-  runApp(const MyCalculatorApp());
+  runApp(const MyApp());
 }
 
 
