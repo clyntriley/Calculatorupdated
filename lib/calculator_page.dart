@@ -96,8 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 textAlign: TextAlign.right,
                 controller: textControllerInput,
-                onTap: () =>
-                    FocusScope.of(context).requestFocus(FocusNode()),
               )),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -113,9 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 textAlign: TextAlign.right,
                 controller: textControllerResult,
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
               )
           ),
           const SizedBox( height: 15.0),
