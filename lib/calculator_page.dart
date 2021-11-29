@@ -1,156 +1,233 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
+
+
 import 'calculator_history.dart';
 import 'converter_page.dart';
 
-
-
-class MyCalculatorApp extends StatelessWidget {
-  const MyCalculatorApp({Key? key}) : super(key: key);
-
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Calculator',
-      theme: ThemeData(primarySwatch: Colors.blue,),
-      home: const MyHomePage(title: 'Calculator Page'),
+    return const MaterialApp(
+      home: MyHomePage(),
     );
   }
 }
-
-
+TextEditingController textControllerInput = TextEditingController();
+TextEditingController textControllerResult = TextEditingController();
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
-
-  final String title;
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-
-
-
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 
 
 class _MyHomePageState extends State<MyHomePage> {
-  late int num1;
-  late int num2;
-  late int answer = 0;
-  late String operator= '';
 
 
-  var numbers = [];
+
+
+  List<String> numbers = [];
 
   addHistory() {
-    numbers.add('$num1 $operator $num2 = $answer');
+    numbers.add(textControllerInput.text + ' = ' + textControllerResult.text );
+
 
   }
 
-
-
   void thirdScreen(BuildContext context) {
-  String textToSend = numbers.toString()  ;
-  Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyHistoryApp(text: textToSend),
-      ));
+    String textToSend = numbers.toString();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyHistoryApp(text: textToSend),
+        ));
 
 
-}
+  }
+
 
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            TextField(
-              onChanged: (digit) => num1=int.parse(digit),
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter a first Number'
-              ),
-            ),
-            TextField(
-              onChanged: (digit) => num2=int.parse(digit),
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter a Second Number'
-              ),
-            ),
-
-            TextField(
-              onChanged: (digit) => operator=(digit),
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter a Operator'
-              ),
-            ),
+      backgroundColor: Colors.white,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
 
 
-            Row(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (operator == '+') {
-                        answer=num1+num2;
-                        addHistory();
-                      } else if (operator == '-'){
-                        answer=num1-num2;
-                        addHistory();
-                      } else if (operator == '*'){
-                        answer=num1*num2;
-                        addHistory();
-                      } else if (operator == '/'){
-                        answer= num1~/num2;
-                        addHistory();
-                      } else if (operator == '^'){
-                        answer =pow(num1, num2).toInt();
-                        addHistory();
-                      }
-                    });
-                  },
-                  child: const Text('Solve'),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ConverterPage()),
+              );
+            },
+            child: const Text('Converter'),
+          ),
+          ElevatedButton(
+            child: const Icon(Icons.history, size: 30, color: Colors.black),
+            onPressed: () {
+              thirdScreen(context);
+            },
+          ),
+
+
+
+
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: TextField(
+
+                decoration: const InputDecoration.collapsed(
+                    hintText: "0",
+                    hintStyle: TextStyle(
+                      fontSize: 30,
+                    )),
+                style: const TextStyle(
+                  fontSize: 30,
                 ),
-
-              ],
-            ),
-            Text("$answer",style: const TextStyle(fontSize: 30)),
-
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ConverterPage()),
-                );
-              },
-              child: const Text('Converter'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                thirdScreen(context);
-              },
-              child: const Text('History Page'),
-            ),
-
-          ],
-        ),
+                textAlign: TextAlign.right,
+                controller: textControllerInput,
+                onTap: () =>
+                    FocusScope.of(context).requestFocus(FocusNode()),
+              )),
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: TextField(
+                decoration: const InputDecoration.collapsed(
+                    hintText: "0",
+                    // fillColor: Colors.deepPurpleAccent,
+                    hintStyle: TextStyle()),
+                textInputAction: TextInputAction.none,
+                keyboardType: TextInputType.number,
+                style: const TextStyle(
+                  fontSize: 32,
+                ),
+                textAlign: TextAlign.right,
+                controller: textControllerResult,
+                onTap: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+              )
+          ),
+          const SizedBox( height: 15.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              buttonAC('AC'),
+              buttonClear(),
+              button('/',),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              button('7'),
+              button('8'),
+              button('9'),
+              button('*'),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              button('4'),
+              button('5'),
+              button('6'),
+              button('-'),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              button('1'),
+              button('2'),
+              button('3'),
+              button('+',),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              button('0'),
+              button('^'),
+              buttonEqual('='),
+            ],
+          ),
+          const SizedBox(height: 15.0,)
+        ],
       ),
     );
+  }
 
 
+
+  Widget button(buttontext) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: ElevatedButton(
+        child: Text(
+          buttontext,
+          style: const TextStyle(
+              fontSize: 28.0, color: Colors.black),
+        ),
+        onPressed: () {
+          setState(() {
+            textControllerInput.text = textControllerInput.text + buttontext;
+
+          });
+        },
+      ),
+    );
+  }
+
+  Widget buttonClear() {
+    return ElevatedButton(
+      child: const Icon(Icons.backspace, size: 30, color: Colors.black),
+      onPressed: () {
+        textControllerInput.text = (textControllerInput.text.isNotEmpty)
+            ? (textControllerInput.text.substring(0, textControllerInput.text.length - 1)) : "";
+      },
+    );
+  }
+  Widget buttonAC(buttonerase)  {
+    return ElevatedButton(
+      child: Text(
+        buttonerase,
+        style: const TextStyle(
+            fontSize: 20.0, color: Colors.black),
+      ),
+      onPressed: () {
+        setState(() {
+          textControllerInput.text = "";
+          textControllerResult.text = "";
+        });
+      },
+    );
+  }
+  Widget buttonEqual(buttonText) {
+    return ElevatedButton(
+      child: Text(
+        buttonText,
+        style: const TextStyle(fontSize: 20.0, color: Colors.black),
+      ),
+      onPressed: () {
+        addHistory();
+        Parser p = Parser();
+        ContextModel cm = ContextModel();
+        Expression exp = p.parse(textControllerInput.text);
+        setState(() {
+          textControllerResult.text = exp.evaluate(EvaluationType.REAL, cm).toString();
+        });
+      },
+    );
   }
 }
