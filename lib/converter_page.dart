@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'calculator_page.dart';
-import 'main.dart';
 
 class MyConverterApp extends StatelessWidget {
   const MyConverterApp({Key? key}) : super(key: key);
@@ -11,7 +10,7 @@ class MyConverterApp extends StatelessWidget {
     return MaterialApp(
       title: 'Converter',
       theme: ThemeData(primarySwatch: Colors.blue,),
-      home: const MyHomePage(title: 'Converter Page'),
+      home:  const MyHomePage(),
     );
 
 
@@ -29,7 +28,7 @@ class ConverterPage extends StatefulWidget {
 }
 
 class _ConverterPageState extends State<ConverterPage> {
-  late double base=0, result= 0;
+  double base=0, result= 0;
 
   @override
   Widget build(BuildContext context) {
