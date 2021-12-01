@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 import 'calculator_history.dart';
@@ -10,8 +11,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
+    return  MaterialApp(
+      home: const MyHomePage(),
+      routes: <String, WidgetBuilder>{
+        MyHistoryApp.text: (context) => const MyHistoryApp(),
+      }
     );
   }
 }
@@ -25,11 +29,18 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-
+Future<bool> saveNumberHistory(String number) async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setString('history', number);
+  return prefs.commit();
+}
+Future<String> getNumberHistory() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String number = prefs.getString('history')! ;
+  return number;
+}
 
 class _MyHomePageState extends State<MyHomePage> {
-
-
 
 
   List<String> numbers = [];
@@ -40,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
-  void thirdScreen(BuildContext context) {
+  /*void thirdScreen(BuildContext context) {
     String textToSend = numbers.toString();
     Navigator.push(
         context,
@@ -49,6 +60,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ));
 
 
+  }*/
+
+  saveHistory() {
+    String number = numbers.toString();
+    saveNumberHistory(number).then((bool committed) {
+      Navigator.of(context).pushNamed(MyHistoryApp.text);
+    });
   }
 
 
@@ -75,7 +93,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ElevatedButton(
             child: const Icon(Icons.history, size: 30, color: Colors.black),
             onPressed: () {
-              thirdScreen(context);
+              saveHistory();
+              //thirdScreen(context);
             },
           ),
 
@@ -165,6 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
+
   Widget button(buttontext) {
     return Container(
       padding: const EdgeInsets.only(bottom: 10.0),
@@ -215,6 +235,7 @@ class _MyHomePageState extends State<MyHomePage> {
         style: const TextStyle(fontSize: 20.0, color: Colors.black),
       ),
       onPressed: () {
+
         addHistory();
         Parser p = Parser();
         ContextModel cm = ContextModel();
@@ -225,4 +246,6 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
+
+
 }
